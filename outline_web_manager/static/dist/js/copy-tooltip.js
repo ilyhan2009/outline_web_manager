@@ -26,7 +26,7 @@ function showTooltip(elem, msg) {
     elem.setAttribute('aria-label', msg);
 
     elem.classList.add('tooltipped');
-    elem.classList.add('tooltipped-ne');
+    elem.classList.add('tooltipped-n');
 }
 
 function fallbackMessage(action) {
