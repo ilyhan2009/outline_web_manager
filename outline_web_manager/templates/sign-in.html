@@ -73,11 +73,11 @@
 <main class="form-signin w-100 m-auto">
   <form action="/sign-in" method="POST">
     <img class="mb-4" src="/static/images/outlinevpn.png" alt="" width="72" height="72">
-    <h1 class="h3 mb-3 fw-normal">Paste your ApiUrl here:</h1>
+    <h1 class="h3 mb-3 fw-normal">Paste your installation output</h1>
 
     <div class="form-floating mb-4">
-      <input type="password" class="form-control" id="ApiUrl" name="ApiUrl" placeholder="https://127.0.0.1:51083/xlUG4F5BBft4rSrIvDSWuw">
-      <label for="ApiUrl">ApiUrl</label>
+      <input type="password" class="form-control" id="outputJsonForm" name="outputJsonForm" placeholder="{'apiUrl': 'https://XXXXXX:12345/xxxxxxxxxxxxxxxxxxxxxxx', 'certSha256': 'xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx'}">
+      <label for="outputJsonForm">output JSON</label>
     </div>
 
     <button class="w-100 btn btn-lg btn-success" type="submit">Sign in Outline Web Manager</button>
