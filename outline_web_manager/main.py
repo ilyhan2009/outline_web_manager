@@ -62,8 +62,8 @@ class PatchedOutlineVPN(OutlineVPN):
 
 
 async def get_outline_client(
-        outputJsonCookie: t.Union[str, None] = Cookie(default=None),
-        outputJsonForm: str = Form(None),
+    outputJsonCookie: t.Union[str, None] = Cookie(default=None),
+    outputJsonForm: str = Form(None),
 ):
     if not outputJsonCookie and not outputJsonForm:
         return None
@@ -139,12 +139,12 @@ async def rename_key_name(
     return response
 
 
-@app.get("/delete/{key_id}", response_class=HTMLResponse)
+@app.post("/delete/{key_id}", response_class=HTMLResponse)
 async def delete_key(
     key_id: int,
     outline_client: PatchedOutlineVPN = Depends(get_outline_client),
 ):
-    response = RedirectResponse('/')
+    response = RedirectResponse('/', status_code=status.HTTP_302_FOUND)
 
     outline_client.delete_key(key_id)
 
@@ -211,11 +211,11 @@ async def set_data_limit(
     return response
 
 
-@app.get("/delete-data-limit", response_class=HTMLResponse)
+@app.post("/delete-data-limit", response_class=HTMLResponse)
 async def delete_data_limit(
     outline_client: PatchedOutlineVPN = Depends(get_outline_client),
 ):
-    response = RedirectResponse('/')
+    response = RedirectResponse('/', status_code=status.HTTP_302_FOUND)
 
     outline_client.delete_data_limit_for_all_keys()
 
@@ -234,21 +234,21 @@ async def set_key_data_limit(
     return response
 
 
-@app.get("/delete-data-limit/{key_id}", response_class=HTMLResponse)
+@app.post("/delete-data-limit/{key_id}", response_class=HTMLResponse)
 async def delete_key_data_limit(
     key_id: int,
     outline_client: PatchedOutlineVPN = Depends(get_outline_client),
 ):
-    response = RedirectResponse('/')
+    response = RedirectResponse('/', status_code=status.HTTP_302_FOUND)
 
     outline_client.delete_data_limit(key_id)
 
     return response
 
 
-@app.get("/logout", response_class=HTMLResponse)
+@app.post("/logout", response_class=HTMLResponse)
 async def logout():
-    response = RedirectResponse('/')
+    response = RedirectResponse('/', status_code=status.HTTP_302_FOUND)
     response.delete_cookie('outputJsonCookie')
     return response
 
