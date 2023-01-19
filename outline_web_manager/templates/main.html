@@ -78,7 +78,7 @@
       <header class="d-flex flex-wrap justify-content-center py-3 mb-4 border-bottom">
         <a href="/" class="d-flex align-items-center mb-md-0 me-md-auto text-dark text-decoration-none">
           <img class="me-2" src="/static/images/outlinevpn.png" alt="" width="32" height="32">
-          <span class="fs-4">{{ server_information['name'] }} ({{ server_information['version'] }}) [{{ "%.1f"|format((total_month_usage or 0) / 1000 / 1000 / 1000) }} GB]</span>
+          <span class="fs-4">{{ server_information['name'] }}</span>
         </a>
 
         <ul class="nav nav-pills">
@@ -170,7 +170,7 @@
           </div>
         </form>
 
-        <form class="row g-3" action="/set-data-limit" method="POST">
+        <form class="row g-3 mb-4" action="/set-data-limit" method="POST">
           <div class="input-group">
             <input type="text" class="form-control" id="dataLimitForAllKeys" name="dataLimitForAllKeys" placeholder="{% if 'accessKeyDataLimit' in server_information %}{{ '%.0f'|format(server_information['accessKeyDataLimit']['bytes'] / 1000 / 1000 / 1000) }} GB{% else %}global limit (GB)...{% endif %}">
             <button type="submit" class="btn btn-outline-success">Set global limit</button>
@@ -186,6 +186,57 @@
             {% endif %}
           </div>
         </form>
+
+        <div class="list-group w-auto">
+          <a class="list-group-item d-flex gap-3 py-3" aria-current="true">
+            <div class="d-flex gap-2 w-100 justify-content-between">
+              <div>
+                <h6 class="mb-0 opacity-75">Data transferred / last 30 days</h6>
+                <p class="mb-0">{{ "%.1f"|format((total_month_usage or 0) / 1000 / 1000 / 1000) }} GB</p>
+              </div>
+            </div>
+          </a>
+          <a class="list-group-item d-flex gap-3 py-3" aria-current="true">
+            <div class="d-flex gap-2 w-100 justify-content-between">
+              <div>
+                <h6 class="mb-0 opacity-75">Port for new access key</h6>
+                <p class="mb-0">{{ server_information['portForNewAccessKeys'] }}</p>
+              </div>
+            </div>
+          </a>
+          <a class="list-group-item d-flex gap-3 py-3" aria-current="true">
+            <div class="d-flex gap-2 w-100 justify-content-between">
+              <div>
+                <h6 class="mb-0 opacity-75">Hostname</h6>
+                <p class="mb-0">{{ server_information['hostnameForAccessKeys'] }}</p>
+              </div>
+            </div>
+          </a>
+          <a class="list-group-item d-flex gap-3 py-3" aria-current="true">
+            <div class="d-flex gap-2 w-100 justify-content-between">
+              <div>
+                <h6 class="mb-0 opacity-75">Created</h6>
+                <p class="mb-0">{{ server_information['createdTimestampMs'] }}</p>
+              </div>
+            </div>
+          </a>
+          <a class="list-group-item d-flex gap-3 py-3" aria-current="true">
+            <div class="d-flex gap-2 w-100 justify-content-between">
+              <div>
+                <h6 class="mb-0 opacity-75">Server ID</h6>
+                <p class="mb-0">{{ server_information['serverId'] }}</p>
+              </div>
+            </div>
+          </a>
+          <a class="list-group-item d-flex gap-3 py-3" aria-current="true">
+            <div class="d-flex gap-2 w-100 justify-content-between">
+              <div>
+                <h6 class="mb-0 opacity-75">Server version</h6>
+                <p class="mb-0">{{ server_information['version'] }}</p>
+              </div>
+            </div>
+          </a>
+        </div>
       </main>
 
       <footer class="pt-5 my-5 text-muted border-top">
