@@ -67,9 +67,14 @@ async def root(request: Request, ApiUrl: t.Union[str, None] = Cookie(default=Non
 
     outline_client = PatchedOutlineVPN(api_url=ApiUrl)
 
+    transferred_data = outline_client.get_transferred_data()
+
+    total_month_usage = sum(transferred_data['bytesTransferredByUserId'].values())
+
     data = {
         'request': request,
         'server_information': outline_client.get_server_information(),
+        'total_month_usage': total_month_usage,
         'keys': outline_client.get_keys(),
     }
 
