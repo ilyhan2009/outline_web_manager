@@ -173,8 +173,8 @@ async def delete_key(request: Request, ApiUrl: t.Union[str, None] = Cookie(defau
     return response
 
 
-@app.post("/set-data-limit/{key_id}/{limit}", response_class=HTMLResponse)
-async def delete_key(request: Request, key_id: int, limit: int, ApiUrl: t.Union[str, None] = Cookie(default=None)):
+@app.post("/set-data-limit/{key_id}", response_class=HTMLResponse)
+async def delete_key(request: Request, key_id: int, dataLimit: int = Form(), ApiUrl: t.Union[str, None] = Cookie(default=None)):
     response = RedirectResponse('/', status_code=status.HTTP_302_FOUND)
 
     try:
@@ -184,7 +184,7 @@ async def delete_key(request: Request, key_id: int, limit: int, ApiUrl: t.Union[
     except Exception as e:
         return response
 
-    outline_client.add_data_limit(key_id, limit)
+    outline_client.add_data_limit(key_id, dataLimit * 1000 * 1000 * 1000)
 
     return response
 
