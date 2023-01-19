@@ -1,3 +1,4 @@
+import datetime
 import typing as t
 
 import uvicorn
@@ -44,7 +45,9 @@ async def root(request: Request, ApiUrl: str = Form()):
     except Exception as e:
         return response
 
-    response.set_cookie(key='ApiUrl', value=ApiUrl)
+    expires = datetime.datetime.utcnow() + datetime.timedelta(days=90)
+
+    response.set_cookie(key='ApiUrl', value=ApiUrl, expires=expires.strftime("%a, %d %b %Y %H:%M:%S GMT"))
     return response
 
 
