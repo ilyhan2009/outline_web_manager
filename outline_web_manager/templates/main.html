@@ -74,6 +74,25 @@
       #keys-grid > .row + .row {
         padding-top: 1rem;
         border-top: var(--bs-border-width) var(--bs-border-style) var(--bs-border-color)!important;
+        border-left: var(--bs-border-width) var(--bs-border-style) var(--bs-border-color)!important;
+        border-right: var(--bs-border-width) var(--bs-border-style) var(--bs-border-color)!important;
+        border-radius: 0.5rem;
+      }
+
+      #keys-grid > .row:last-child {
+        padding-bottom: 0.5rem;
+        border-bottom: var(--bs-border-width) var(--bs-border-style) var(--bs-border-color)!important;
+      }
+
+      #server-grid > .row > * {
+        border-top: var(--bs-border-width) var(--bs-border-style) var(--bs-border-color)!important;
+        border-left: var(--bs-border-width) var(--bs-border-style) var(--bs-border-color)!important;
+        border-right: var(--bs-border-width) var(--bs-border-style) var(--bs-border-color)!important;
+        border-radius: 0.5rem;
+      }
+
+      #server-grid > .row:last-child > * {
+        border-bottom: var(--bs-border-width) var(--bs-border-style) var(--bs-border-color)!important;
       }
     </style>
 
