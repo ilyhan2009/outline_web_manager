@@ -1,0 +1,32 @@
+version: '3.9'
+
+networks:
+  server_default:
+    driver: bridge
+    ipam:
+     config:
+       - subnet: 172.20.0.0/16
+         gateway: 172.20.0.1
+
+volumes:
+  Server:
+    external: true
+  rabbitmq_data:
+  rabbitmq_log:
+
+services:
+  outline_web_manager:
+      container_name: outline_web_manager
+      build: ./outline_web_manager
+
+      command: bash -c "uvicorn main:app --host 0.0.0.0 --port 8000 --reload"
+      networks:
+        server_default:
+          ipv4_address: 172.20.0.6
+      ports:
+        - "8000:8000"
+      restart: always
+      volumes:
+        # Source code
+        - /var/run/docker.sock:/var/run/docker.sock
+        - "./outline_web_manager/:/outline_web_manager/"
