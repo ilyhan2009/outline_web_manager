@@ -64,6 +64,22 @@ async def create_new_key(request: Request, newKeyName: str = Form(), ApiUrl: t.U
     return response
 
 
+@app.post("/rename/{key_id}", response_class=HTMLResponse)
+async def rename_key_name(request: Request, key_id: int, keyName: str = Form(), ApiUrl: t.Union[str, None] = Cookie(default=None)):
+    response = RedirectResponse('/', status_code=status.HTTP_302_FOUND)
+
+    try:
+        outline_client = OutlineVPN(api_url=ApiUrl)
+
+        server_information = outline_client.get_server_information()
+    except Exception as e:
+        return response
+
+    outline_client.rename_key(key_id, keyName)
+
+    return response
+
+
 @app.get("/delete/{key_id}", response_class=HTMLResponse)
 async def delete_key(request: Request, key_id: int, ApiUrl: t.Union[str, None] = Cookie(default=None)):
     response = RedirectResponse('/')
