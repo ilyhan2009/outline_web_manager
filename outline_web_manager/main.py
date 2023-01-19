@@ -99,9 +99,41 @@ async def delete_key(request: Request, key_id: int, ApiUrl: t.Union[str, None] =
     return response
 
 
-@app.get("/add-data-limit/{key_id}/{limit}", response_class=HTMLResponse)
-async def delete_key(request: Request, key_id: int, limit: int, ApiUrl: t.Union[str, None] = Cookie(default=None)):
+@app.post("/set-data-limit", response_class=HTMLResponse)
+async def delete_key(request: Request, dataLimitForAllKeys: int = Form(), ApiUrl: t.Union[str, None] = Cookie(default=None)):
+    response = RedirectResponse('/', status_code=status.HTTP_302_FOUND)
+
+    try:
+        outline_client = OutlineVPN(api_url=ApiUrl)
+
+        server_information = outline_client.get_server_information()
+    except Exception as e:
+        return response
+
+    outline_client.set_data_limit_for_all_keys(dataLimitForAllKeys * 1000 * 1000 * 1000)
+
+    return response
+
+
+@app.get("/delete-data-limit", response_class=HTMLResponse)
+async def delete_key(request: Request, ApiUrl: t.Union[str, None] = Cookie(default=None)):
     response = RedirectResponse('/')
+
+    try:
+        outline_client = OutlineVPN(api_url=ApiUrl)
+
+        server_information = outline_client.get_server_information()
+    except Exception as e:
+        return response
+
+    outline_client.delete_data_limit_for_all_keys()
+
+    return response
+
+
+@app.post("/set-data-limit/{key_id}/{limit}", response_class=HTMLResponse)
+async def delete_key(request: Request, key_id: int, limit: int, ApiUrl: t.Union[str, None] = Cookie(default=None)):
+    response = RedirectResponse('/', status_code=status.HTTP_302_FOUND)
 
     try:
         outline_client = OutlineVPN(api_url=ApiUrl)
