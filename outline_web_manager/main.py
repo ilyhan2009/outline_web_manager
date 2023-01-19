@@ -182,7 +182,7 @@ async def set_hostname(request: Request, hostnameForAccessKeys: str = Form(), Ap
 
 
 @app.post("/set-metrics", response_class=HTMLResponse)
-async def set_hostname(request: Request, metricsEnabled: bool = Form(False), ApiUrl: t.Union[str, None] = Cookie(default=None)):
+async def set_hostname(request: Request, metrics: bool = Form(), ApiUrl: t.Union[str, None] = Cookie(default=None)):
     response = RedirectResponse('/', status_code=status.HTTP_302_FOUND)
 
     try:
@@ -192,7 +192,7 @@ async def set_hostname(request: Request, metricsEnabled: bool = Form(False), Api
     except Exception as e:
         return response
 
-    outline_client.set_metrics_status(metricsEnabled)
+    outline_client.set_metrics_status(metrics)
 
     return response
 
