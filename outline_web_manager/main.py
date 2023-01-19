@@ -71,9 +71,12 @@ async def root(request: Request, ApiUrl: t.Union[str, None] = Cookie(default=Non
 
     total_month_usage = sum(transferred_data['bytesTransferredByUserId'].values())
 
+    server_information = outline_client.get_server_information()
+
     data = {
         'request': request,
-        'server_information': outline_client.get_server_information(),
+        'server_information': server_information,
+        'server_creation': datetime.datetime.fromtimestamp(server_information['createdTimestampMs'] // 1000),
         'total_month_usage': total_month_usage,
         'keys': outline_client.get_keys(),
     }
