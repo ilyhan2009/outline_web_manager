@@ -62,6 +62,19 @@
         white-space: nowrap;
         -webkit-overflow-scrolling: touch;
       }
+
+      #keys-grid > .row > .col-sm-6 {
+        padding-bottom: .5rem;
+      }
+
+      #keys-grid > .row:not(:last-child) {
+        padding-bottom: .5rem;
+      }
+
+      #keys-grid > .row + .row {
+        padding-top: 1rem;
+        border-top: var(--bs-border-width) var(--bs-border-style) var(--bs-border-color)!important;
+      }
     </style>
 
     <!-- Custom styles for this template -->
@@ -87,81 +100,96 @@
       </header>
 
       <main>
-        <h3>Keys</h3>
-        <table class="table mb-4">
-          <thead>
-            <tr>
-              <th scope="col">#</th>
-              <th scope="col">Name</th>
-              <th scope="col">Usage</th>
-              <th scope="col">Limit</th>
-              <th scope="col">Actions</th>
-            </tr>
-          </thead>
-          <tbody>
-            {%- for key in keys %}
-              <tr>
-                <th scope="row">{{ key.key_id }}</th>
-                <td>
-                  <form action="/rename/{{ key.key_id }}" method="POST">
-                    <div class="input-group">
-                      <input type="text" class="form-control" placeholder="{{ key.name }}" name="keyName">
-                      <button type="submit" class="btn btn-secondary tooltipped tooltipped-n" aria-label="Rename">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-pencil-square" viewBox="0 0 16 16">
-                          <path d="M15.502 1.94a.5.5 0 0 1 0 .706L14.459 3.69l-2-2L13.502.646a.5.5 0 0 1 .707 0l1.293 1.293zm-1.75 2.456-2-2L4.939 9.21a.5.5 0 0 0-.121.196l-.805 2.414a.25.25 0 0 0 .316.316l2.414-.805a.5.5 0 0 0 .196-.12l6.813-6.814z"/>
-                          <path fill-rule="evenodd" d="M1 13.5A1.5 1.5 0 0 0 2.5 15h11a1.5 1.5 0 0 0 1.5-1.5v-6a.5.5 0 0 0-1 0v6a.5.5 0 0 1-.5.5h-11a.5.5 0 0 1-.5-.5v-11a.5.5 0 0 1 .5-.5H9a.5.5 0 0 0 0-1H2.5A1.5 1.5 0 0 0 1 2.5v11z"/>
+        <h3 class="mb-4">Keys</h3>
+
+        <div id="keys-grid" class="mb-3">
+          <div class="row grid-row d-none d-sm-flex fw-bold">
+              <div class="col-sm-6">
+                <div class="row">
+                  <div class="col-auto">#</div>
+                  <div class="col">Name</div>
+                  <div class="col-auto">Usage</div>
+                </div>
+              </div>
+              <div class="col-sm-6">
+                <div class="row">
+                  <div class="col">Limit</div>
+                  <div class="col-auto">Actions</div>
+                </div>
+              </div>
+            </div>
+          {%- for key in keys %}
+            <div class="row grid-row">
+              <div class="col-sm-6">
+                <div class="row">
+                  <div class="col-auto">
+                    {{ key.key_id }}
+                  </div>
+                  <div class="col">
+                    <form action="/rename/{{ key.key_id }}" method="POST">
+                      <div class="input-group">
+                        <input type="text" class="form-control" placeholder="{{ key.name }}" name="keyName">
+                        <button type="submit" class="btn btn-outline-secondary tooltipped tooltipped-n" aria-label="Rename">
+                          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-pencil-square" viewBox="0 0 16 16">
+                            <path d="M15.502 1.94a.5.5 0 0 1 0 .706L14.459 3.69l-2-2L13.502.646a.5.5 0 0 1 .707 0l1.293 1.293zm-1.75 2.456-2-2L4.939 9.21a.5.5 0 0 0-.121.196l-.805 2.414a.25.25 0 0 0 .316.316l2.414-.805a.5.5 0 0 0 .196-.12l6.813-6.814z"/>
+                            <path fill-rule="evenodd" d="M1 13.5A1.5 1.5 0 0 0 2.5 15h11a1.5 1.5 0 0 0 1.5-1.5v-6a.5.5 0 0 0-1 0v6a.5.5 0 0 1-.5.5h-11a.5.5 0 0 1-.5-.5v-11a.5.5 0 0 1 .5-.5H9a.5.5 0 0 0 0-1H2.5A1.5 1.5 0 0 0 1 2.5v11z"/>
+                          </svg>
+                        </button>
+                      </div>
+                </form>
+                  </div>
+                  <div class="col-auto">
+                    <span>{{ "%.1f"|format((key.used_bytes or 0) / 1000 / 1000 / 1000) }} GB</span>
+                  </div>
+                </div>
+              </div>
+              <div class="col-sm-6">
+                <div class="row">
+                  <div class="col">
+                    <form action="/set-data-limit/{{ key.key_id }}" method="POST">
+                      <div class="input-group">
+                        <input type="text" class="form-control" placeholder="{% if key.data_limit or 'accessKeyDataLimit' in server_information %}{{ '%.0f'|format((key.data_limit or server_information['accessKeyDataLimit']['bytes']) / 1000 / 1000 / 1000) }} GB{% else %}<Enter personal limit (GB)>{% endif %}" name="dataLimit">
+                        <button type="submit" class="btn btn-outline-secondary tooltipped tooltipped-n" aria-label="Change limit">
+                          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-pencil-square" viewBox="0 0 16 16">
+                            <path d="M15.502 1.94a.5.5 0 0 1 0 .706L14.459 3.69l-2-2L13.502.646a.5.5 0 0 1 .707 0l1.293 1.293zm-1.75 2.456-2-2L4.939 9.21a.5.5 0 0 0-.121.196l-.805 2.414a.25.25 0 0 0 .316.316l2.414-.805a.5.5 0 0 0 .196-.12l6.813-6.814z"/>
+                            <path fill-rule="evenodd" d="M1 13.5A1.5 1.5 0 0 0 2.5 15h11a1.5 1.5 0 0 0 1.5-1.5v-6a.5.5 0 0 0-1 0v6a.5.5 0 0 1-.5.5h-11a.5.5 0 0 1-.5-.5v-11a.5.5 0 0 1 .5-.5H9a.5.5 0 0 0 0-1H2.5A1.5 1.5 0 0 0 1 2.5v11z"/>
+                          </svg>
+                        </button>
+                        {% if key.data_limit %}
+                          <button onclick="window.location.href='/delete-data-limit/{{ key.key_id }}'" type="button" class="btn btn-outline-danger tooltipped tooltipped-n" aria-label="Delete limit">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-trash3-fill" viewBox="0 0 16 16">
+                                <path d="M11 1.5v1h3.5a.5.5 0 0 1 0 1h-.538l-.853 10.66A2 2 0 0 1 11.115 16h-6.23a2 2 0 0 1-1.994-1.84L2.038 3.5H1.5a.5.5 0 0 1 0-1H5v-1A1.5 1.5 0 0 1 6.5 0h3A1.5 1.5 0 0 1 11 1.5Zm-5 0v1h4v-1a.5.5 0 0 0-.5-.5h-3a.5.5 0 0 0-.5.5ZM4.5 5.029l.5 8.5a.5.5 0 1 0 .998-.06l-.5-8.5a.5.5 0 1 0-.998.06Zm6.53-.528a.5.5 0 0 0-.528.47l-.5 8.5a.5.5 0 0 0 .998.058l.5-8.5a.5.5 0 0 0-.47-.528ZM8 4.5a.5.5 0 0 0-.5.5v8.5a.5.5 0 0 0 1 0V5a.5.5 0 0 0-.5-.5Z"></path>
+                            </svg>
+                            <span class="visually-hidden">Delete</span>
+                          </button>
+                        {% endif %}
+                      </div>
+                    </form>
+                  </div>
+                  <div class="col-auto">
+                    <div class="btn-group" role="group" aria-label="Actions">
+                      <button type="button" class="btn btn-outline-secondary btn-clipboard tooltipped tooltipped-n" data-clipboard-text="{{ key.access_url }}" aria-label="Copy Access Url">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-clipboard-fill" viewBox="0 0 16 16">
+                          <path fill-rule="evenodd" d="M10 1.5a.5.5 0 0 0-.5-.5h-3a.5.5 0 0 0-.5.5v1a.5.5 0 0 0 .5.5h3a.5.5 0 0 0 .5-.5v-1Zm-5 0A1.5 1.5 0 0 1 6.5 0h3A1.5 1.5 0 0 1 11 1.5v1A1.5 1.5 0 0 1 9.5 4h-3A1.5 1.5 0 0 1 5 2.5v-1Zm-2 0h1v1A2.5 2.5 0 0 0 6.5 5h3A2.5 2.5 0 0 0 12 2.5v-1h1a2 2 0 0 1 2 2V14a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V3.5a2 2 0 0 1 2-2Z"></path>
                         </svg>
+                        <span class="visually-hidden">Copy Access Url</span>
                       </button>
-                    </div>
-                  </form>
-                </td>
-                <td>
-                  <span>{{ "%.1f"|format((key.used_bytes or 0) / 1000 / 1000 / 1000) }} GB</span>
-                </td>
-                <td>
-                  <form action="/set-data-limit/{{ key.key_id }}" method="POST">
-                    <div class="input-group">
-                      <input type="text" class="form-control" placeholder="{% if key.data_limit or 'accessKeyDataLimit' in server_information %}{{ '%.0f'|format((key.data_limit or server_information['accessKeyDataLimit']['bytes']) / 1000 / 1000 / 1000) }} GB{% else %}<Enter personal limit (GB)>{% endif %}" name="dataLimit">
-                      <button type="submit" class="btn btn-secondary tooltipped tooltipped-n" aria-label="Change limit">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-pencil-square" viewBox="0 0 16 16">
-                          <path d="M15.502 1.94a.5.5 0 0 1 0 .706L14.459 3.69l-2-2L13.502.646a.5.5 0 0 1 .707 0l1.293 1.293zm-1.75 2.456-2-2L4.939 9.21a.5.5 0 0 0-.121.196l-.805 2.414a.25.25 0 0 0 .316.316l2.414-.805a.5.5 0 0 0 .196-.12l6.813-6.814z"/>
-                          <path fill-rule="evenodd" d="M1 13.5A1.5 1.5 0 0 0 2.5 15h11a1.5 1.5 0 0 0 1.5-1.5v-6a.5.5 0 0 0-1 0v6a.5.5 0 0 1-.5.5h-11a.5.5 0 0 1-.5-.5v-11a.5.5 0 0 1 .5-.5H9a.5.5 0 0 0 0-1H2.5A1.5 1.5 0 0 0 1 2.5v11z"/>
-                        </svg>
-                      </button>
-                      {% if key.data_limit %}
-                        <button onclick="window.location.href='/delete-data-limit/{{ key.key_id }}'" type="button" class="btn btn-danger tooltipped tooltipped-n" aria-label="Delete limit">
+                      <button onclick="window.location.href='/delete/{{ key.key_id }}'" type="button" class="btn btn-danger tooltipped tooltipped-n" aria-label="Delete">
                           <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-trash3-fill" viewBox="0 0 16 16">
                               <path d="M11 1.5v1h3.5a.5.5 0 0 1 0 1h-.538l-.853 10.66A2 2 0 0 1 11.115 16h-6.23a2 2 0 0 1-1.994-1.84L2.038 3.5H1.5a.5.5 0 0 1 0-1H5v-1A1.5 1.5 0 0 1 6.5 0h3A1.5 1.5 0 0 1 11 1.5Zm-5 0v1h4v-1a.5.5 0 0 0-.5-.5h-3a.5.5 0 0 0-.5.5ZM4.5 5.029l.5 8.5a.5.5 0 1 0 .998-.06l-.5-8.5a.5.5 0 1 0-.998.06Zm6.53-.528a.5.5 0 0 0-.528.47l-.5 8.5a.5.5 0 0 0 .998.058l.5-8.5a.5.5 0 0 0-.47-.528ZM8 4.5a.5.5 0 0 0-.5.5v8.5a.5.5 0 0 0 1 0V5a.5.5 0 0 0-.5-.5Z"></path>
                           </svg>
                           <span class="visually-hidden">Delete</span>
-                        </button>
-                      {% endif %}
+                        </a>
+                      </button>
                     </div>
-                  </form>
-                </td>
-                <td>
-                  <div class="btn-group" role="group" aria-label="Actions">
-                    <button type="button" class="btn btn-secondary btn-clipboard tooltipped tooltipped-n" data-clipboard-text="{{ key.access_url }}" aria-label="Copy Access Url">
-                      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-clipboard-fill" viewBox="0 0 16 16">
-                        <path fill-rule="evenodd" d="M10 1.5a.5.5 0 0 0-.5-.5h-3a.5.5 0 0 0-.5.5v1a.5.5 0 0 0 .5.5h3a.5.5 0 0 0 .5-.5v-1Zm-5 0A1.5 1.5 0 0 1 6.5 0h3A1.5 1.5 0 0 1 11 1.5v1A1.5 1.5 0 0 1 9.5 4h-3A1.5 1.5 0 0 1 5 2.5v-1Zm-2 0h1v1A2.5 2.5 0 0 0 6.5 5h3A2.5 2.5 0 0 0 12 2.5v-1h1a2 2 0 0 1 2 2V14a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V3.5a2 2 0 0 1 2-2Z"></path>
-                      </svg>
-                      <span class="visually-hidden">Copy Access Url</span>
-                    </button>
-                    <button onclick="window.location.href='/delete/{{ key.key_id }}'" type="button" class="btn btn-danger tooltipped tooltipped-n" aria-label="Delete">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-trash3-fill" viewBox="0 0 16 16">
-                            <path d="M11 1.5v1h3.5a.5.5 0 0 1 0 1h-.538l-.853 10.66A2 2 0 0 1 11.115 16h-6.23a2 2 0 0 1-1.994-1.84L2.038 3.5H1.5a.5.5 0 0 1 0-1H5v-1A1.5 1.5 0 0 1 6.5 0h3A1.5 1.5 0 0 1 11 1.5Zm-5 0v1h4v-1a.5.5 0 0 0-.5-.5h-3a.5.5 0 0 0-.5.5ZM4.5 5.029l.5 8.5a.5.5 0 1 0 .998-.06l-.5-8.5a.5.5 0 1 0-.998.06Zm6.53-.528a.5.5 0 0 0-.528.47l-.5 8.5a.5.5 0 0 0 .998.058l.5-8.5a.5.5 0 0 0-.47-.528ZM8 4.5a.5.5 0 0 0-.5.5v8.5a.5.5 0 0 0 1 0V5a.5.5 0 0 0-.5-.5Z"></path>
-                        </svg>
-                        <span class="visually-hidden">Delete</span>
-                      </a>
-                    </button>
                   </div>
-                </td>
-              </tr>
-            {% endfor %}
-          </tbody>
-        </table>
+                </div>
+              </div>
+            </div>
+          {% endfor %}
+        </div>
 
-        <form class="row g-3 mb-5" action="/add" method="POST">
+        <form class="row mb-5" action="/add" method="POST">
           <div class="input-group">
             <input type="text" class="form-control" id="newKeyName" name="newKeyName" placeholder="<Enter new key name>">
             <button type="submit" class="btn btn-success">Create new key</button>
@@ -179,7 +207,7 @@
                   <form class="row g-3" action="/set-server-name" method="POST">
                     <div class="input-group">
                       <input type="text" class="form-control" id="serverName" name="serverName" placeholder="{{ server_information['name'] }}">
-                      <button type="submit" class="btn btn-secondary tooltipped tooltipped-n" aria-label="Rename">
+                      <button type="submit" class="btn btn-outline-secondary tooltipped tooltipped-n" aria-label="Rename">
                         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-pencil-square" viewBox="0 0 16 16">
                           <path d="M15.502 1.94a.5.5 0 0 1 0 .706L14.459 3.69l-2-2L13.502.646a.5.5 0 0 1 .707 0l1.293 1.293zm-1.75 2.456-2-2L4.939 9.21a.5.5 0 0 0-.121.196l-.805 2.414a.25.25 0 0 0 .316.316l2.414-.805a.5.5 0 0 0 .196-.12l6.813-6.814z"/>
                           <path fill-rule="evenodd" d="M1 13.5A1.5 1.5 0 0 0 2.5 15h11a1.5 1.5 0 0 0 1.5-1.5v-6a.5.5 0 0 0-1 0v6a.5.5 0 0 1-.5.5h-11a.5.5 0 0 1-.5-.5v-11a.5.5 0 0 1 .5-.5H9a.5.5 0 0 0 0-1H2.5A1.5 1.5 0 0 0 1 2.5v11z"/>
@@ -199,14 +227,14 @@
                   <form class="row g-3" action="/set-data-limit" method="POST">
                     <div class="input-group">
                       <input type="text" class="form-control" id="dataLimitForAllKeys" name="dataLimitForAllKeys" placeholder="{% if 'accessKeyDataLimit' in server_information %}{{ '%.0f'|format(server_information['accessKeyDataLimit']['bytes'] / 1000 / 1000 / 1000) }} GB{% else %}<Set a 30 day trailing data transfer limit (GB) for access keys>{% endif %}">
-                      <button type="submit" class="btn btn-secondary tooltipped tooltipped-n" aria-label="Set global limit">
+                      <button type="submit" class="btn btn-outline-secondary tooltipped tooltipped-n" aria-label="Set global limit">
                         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-pencil-square" viewBox="0 0 16 16">
                           <path d="M15.502 1.94a.5.5 0 0 1 0 .706L14.459 3.69l-2-2L13.502.646a.5.5 0 0 1 .707 0l1.293 1.293zm-1.75 2.456-2-2L4.939 9.21a.5.5 0 0 0-.121.196l-.805 2.414a.25.25 0 0 0 .316.316l2.414-.805a.5.5 0 0 0 .196-.12l6.813-6.814z"/>
                           <path fill-rule="evenodd" d="M1 13.5A1.5 1.5 0 0 0 2.5 15h11a1.5 1.5 0 0 0 1.5-1.5v-6a.5.5 0 0 0-1 0v6a.5.5 0 0 1-.5.5h-11a.5.5 0 0 1-.5-.5v-11a.5.5 0 0 1 .5-.5H9a.5.5 0 0 0 0-1H2.5A1.5 1.5 0 0 0 1 2.5v11z"/>
                         </svg>
                       </button>
                       {% if 'accessKeyDataLimit' in server_information %}
-                        <button type="button" onclick="window.location.href='/delete-data-limit'" class="btn btn-danger tooltipped tooltipped-n" aria-label="Delete limit">
+                        <button type="button" onclick="window.location.href='/delete-data-limit'" class="btn btn-outline-danger tooltipped tooltipped-n" aria-label="Delete limit">
                           <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-trash3-fill" viewBox="0 0 16 16">
                             <path d="M11 1.5v1h3.5a.5.5 0 0 1 0 1h-.538l-.853 10.66A2 2 0 0 1 11.115 16h-6.23a2 2 0 0 1-1.994-1.84L2.038 3.5H1.5a.5.5 0 0 1 0-1H5v-1A1.5 1.5 0 0 1 6.5 0h3A1.5 1.5 0 0 1 11 1.5Zm-5 0v1h4v-1a.5.5 0 0 0-.5-.5h-3a.5.5 0 0 0-.5.5ZM4.5 5.029l.5 8.5a.5.5 0 1 0 .998-.06l-.5-8.5a.5.5 0 1 0-.998.06Zm6.53-.528a.5.5 0 0 0-.528.47l-.5 8.5a.5.5 0 0 0 .998.058l.5-8.5a.5.5 0 0 0-.47-.528ZM8 4.5a.5.5 0 0 0-.5.5v8.5a.5.5 0 0 0 1 0V5a.5.5 0 0 0-.5-.5Z"></path>
                           </svg>
@@ -223,13 +251,23 @@
           <div class="row grid-row">
               <div class="col-sm-6">
                 <a class="list-group-item py-3" aria-current="true">
-              <div class="d-flex gap-2 w-100 justify-content-between">
-                <div class="w-100">
-                  <h6 class="mb-0 opacity-75">Data transferred / last 30 days</h6>
-                  <p class="mb-0">{{ "%.1f"|format((total_month_usage or 0) / 1000 / 1000 / 1000) }} GB</p>
-                </div>
-              </div>
-      </a>
+                  <div class="d-flex gap-2 w-100 justify-content-between">
+                    <div class="w-100">
+                      <h6 class="mb-0 opacity-75">Hostname</h6>
+                      <form class="row g-3" action="/set-hostname" method="POST">
+                        <div class="input-group">
+                          <input type="text" class="form-control" id="hostnameForAccessKeys" name="hostnameForAccessKeys" placeholder="{{ server_information['hostnameForAccessKeys'] }}">
+                          <button type="submit" class="btn btn-outline-secondary tooltipped tooltipped-n" aria-label="Change hostname">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-pencil-square" viewBox="0 0 16 16">
+                              <path d="M15.502 1.94a.5.5 0 0 1 0 .706L14.459 3.69l-2-2L13.502.646a.5.5 0 0 1 .707 0l1.293 1.293zm-1.75 2.456-2-2L4.939 9.21a.5.5 0 0 0-.121.196l-.805 2.414a.25.25 0 0 0 .316.316l2.414-.805a.5.5 0 0 0 .196-.12l6.813-6.814z"/>
+                              <path fill-rule="evenodd" d="M1 13.5A1.5 1.5 0 0 0 2.5 15h11a1.5 1.5 0 0 0 1.5-1.5v-6a.5.5 0 0 0-1 0v6a.5.5 0 0 1-.5.5h-11a.5.5 0 0 1-.5-.5v-11a.5.5 0 0 1 .5-.5H9a.5.5 0 0 0 0-1H2.5A1.5 1.5 0 0 0 1 2.5v11z"/>
+                            </svg>
+                          </button>
+                        </div>
+                      </form>
+                    </div>
+                  </div>
+                </a>
               </div>
               <div class="col-sm-6">
                 <a class="list-group-item py-3" aria-current="true">
@@ -239,7 +277,7 @@
                   <form class="row g-3" action="/set-port" method="POST">
                     <div class="input-group">
                       <input type="text" class="form-control" id="portForNewAccessKeys" name="portForNewAccessKeys" placeholder="{{ server_information['portForNewAccessKeys'] }}">
-                      <button type="submit" class="btn btn-secondary tooltipped tooltipped-n" aria-label="Change port">
+                      <button type="submit" class="btn btn-outline-secondary tooltipped tooltipped-n" aria-label="Change port">
                         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-pencil-square" viewBox="0 0 16 16">
                           <path d="M15.502 1.94a.5.5 0 0 1 0 .706L14.459 3.69l-2-2L13.502.646a.5.5 0 0 1 .707 0l1.293 1.293zm-1.75 2.456-2-2L4.939 9.21a.5.5 0 0 0-.121.196l-.805 2.414a.25.25 0 0 0 .316.316l2.414-.805a.5.5 0 0 0 .196-.12l6.813-6.814z"/>
                           <path fill-rule="evenodd" d="M1 13.5A1.5 1.5 0 0 0 2.5 15h11a1.5 1.5 0 0 0 1.5-1.5v-6a.5.5 0 0 0-1 0v6a.5.5 0 0 1-.5.5h-11a.5.5 0 0 1-.5-.5v-11a.5.5 0 0 1 .5-.5H9a.5.5 0 0 0 0-1H2.5A1.5 1.5 0 0 0 1 2.5v11z"/>
@@ -255,23 +293,13 @@
           <div class="row grid-row">
               <div class="col-sm-6">
                 <a class="list-group-item py-3" aria-current="true">
-              <div class="d-flex gap-2 w-100 justify-content-between">
-                <div class="w-100">
-                  <h6 class="mb-0 opacity-75">Hostname</h6>
-                  <form class="row g-3" action="/set-hostname" method="POST">
-                    <div class="input-group">
-                      <input type="text" class="form-control" id="hostnameForAccessKeys" name="hostnameForAccessKeys" placeholder="{{ server_information['hostnameForAccessKeys'] }}">
-                      <button type="submit" class="btn btn-secondary tooltipped tooltipped-n" aria-label="Change hostname">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-pencil-square" viewBox="0 0 16 16">
-                          <path d="M15.502 1.94a.5.5 0 0 1 0 .706L14.459 3.69l-2-2L13.502.646a.5.5 0 0 1 .707 0l1.293 1.293zm-1.75 2.456-2-2L4.939 9.21a.5.5 0 0 0-.121.196l-.805 2.414a.25.25 0 0 0 .316.316l2.414-.805a.5.5 0 0 0 .196-.12l6.813-6.814z"/>
-                          <path fill-rule="evenodd" d="M1 13.5A1.5 1.5 0 0 0 2.5 15h11a1.5 1.5 0 0 0 1.5-1.5v-6a.5.5 0 0 0-1 0v6a.5.5 0 0 1-.5.5h-11a.5.5 0 0 1-.5-.5v-11a.5.5 0 0 1 .5-.5H9a.5.5 0 0 0 0-1H2.5A1.5 1.5 0 0 0 1 2.5v11z"/>
-                        </svg>
-                      </button>
+                  <div class="d-flex gap-2 w-100 justify-content-between">
+                    <div class="w-100">
+                      <h6 class="mb-0 opacity-75">Data transferred / last 30 days</h6>
+                      <p class="mb-0">{{ "%.1f"|format((total_month_usage or 0) / 1000 / 1000 / 1000) }} GB</p>
                     </div>
-                  </form>
-                </div>
-              </div>
-          </a>
+                  </div>
+                </a>
               </div>
               <div class="col-sm-6">
                 <a class="list-group-item py-3" aria-current="true">
