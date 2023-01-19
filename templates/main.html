@@ -142,9 +142,15 @@
     {% endfor %}
       </div>
 
-    <div class="mb-5">
-      <a href="../examples/" class="btn btn-primary btn-lg px-4">Add new key</a>
-    </div>
+    <form class="row g-3" action="/new-key" method="POST">
+  <div class="col-7">
+    <label for="newKeyName" class="visually-hidden">New key name</label>
+    <input type="text" class="form-control" id="newKeyName" name="newKeyName" placeholder="new key name...">
+  </div>
+  <div class="col-5">
+    <button type="submit" class="btn btn-primary mb-3">Create new key</button>
+  </div>
+</form>
 
   </main>
   <footer class="pt-5 my-5 text-muted border-top">

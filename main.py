@@ -48,6 +48,22 @@ async def root(request: Request, ApiUrl: str = Form()):
     return response
 
 
+@app.post("/new-key", response_class=HTMLResponse)
+async def create_new_key(request: Request, newKeyName: str = Form(), ApiUrl: t.Union[str, None] = Cookie(default=None)):
+    response = RedirectResponse('/', status_code=status.HTTP_302_FOUND)
+
+    try:
+        outline_client = OutlineVPN(api_url=ApiUrl)
+
+        server_information = outline_client.get_server_information()
+    except Exception as e:
+        return response
+
+    outline_client.create_key(newKeyName)
+
+    return response
+
+
 @app.get("/logout", response_class=HTMLResponse)
 async def root(request: Request):
     response = RedirectResponse('/')
