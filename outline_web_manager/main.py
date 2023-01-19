@@ -80,6 +80,38 @@ async def delete_key(request: Request, key_id: int, ApiUrl: t.Union[str, None] =
     return response
 
 
+@app.get("/add-data-limit/{key_id}/{limit}", response_class=HTMLResponse)
+async def delete_key(request: Request, key_id: int, limit: int, ApiUrl: t.Union[str, None] = Cookie(default=None)):
+    response = RedirectResponse('/')
+
+    try:
+        outline_client = OutlineVPN(api_url=ApiUrl)
+
+        server_information = outline_client.get_server_information()
+    except Exception as e:
+        return response
+
+    outline_client.add_data_limit(key_id, limit)
+
+    return response
+
+
+@app.get("/delete-data-limit/{key_id}", response_class=HTMLResponse)
+async def delete_key(request: Request, key_id: int, ApiUrl: t.Union[str, None] = Cookie(default=None)):
+    response = RedirectResponse('/')
+
+    try:
+        outline_client = OutlineVPN(api_url=ApiUrl)
+
+        server_information = outline_client.get_server_information()
+    except Exception as e:
+        return response
+
+    outline_client.delete_data_limit(key_id)
+
+    return response
+
+
 @app.get("/logout", response_class=HTMLResponse)
 async def root(request: Request):
     response = RedirectResponse('/')
