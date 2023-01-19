@@ -6,7 +6,7 @@
     <meta name="description" content="">
     <meta name="author" content="Mark Otto, Jacob Thornton, and Bootstrap contributors">
     <meta name="generator" content="Hugo 0.108.0">
-    <title>{{ server_information['name'] }}</title>
+    <title>Outline Web Manager | {{ server_information['name'] }}</title>
 
 <link href="/static/dist/css/bootstrap.min.css" rel="stylesheet">
 
@@ -88,9 +88,9 @@
   </div>
 
   <main>
-    <h2 class="mt-4">Keys</h2>
+    <h2 class="mt-5">Keys</h2>
 
-    <table class="table">
+    <table class="table mb-5">
   <thead>
     <tr>
       <th scope="col">#</th>
@@ -153,17 +153,14 @@
 </table>
 
     <form class="row g-3" action="/add" method="POST">
-      <div class="col-7">
-        <label for="newKeyName" class="visually-hidden">New key name</label>
+      <div class="input-group">
         <input type="text" class="form-control" id="newKeyName" name="newKeyName" placeholder="new key name...">
-      </div>
-      <div class="col-5">
-        <button type="submit" class="btn btn-primary mb-3">Create new key</button>
+        <button type="submit" class="btn btn-primary">Create new key</button>
       </div>
     </form>
   </main>
   <footer class="pt-5 my-5 text-muted border-top">
-    Created by the Bootstrap team &middot; &copy; 2022
+    <a href="https://github.com/ilyhan2009/outline_web_manager">Outline Web Manager</a>, 2022
   </footer>
 </div>
 
