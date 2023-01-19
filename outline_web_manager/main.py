@@ -181,6 +181,22 @@ async def set_hostname(request: Request, hostnameForAccessKeys: str = Form(), Ap
     return response
 
 
+@app.post("/set-metrics", response_class=HTMLResponse)
+async def set_hostname(request: Request, metricsEnabled: bool = Form(False), ApiUrl: t.Union[str, None] = Cookie(default=None)):
+    response = RedirectResponse('/', status_code=status.HTTP_302_FOUND)
+
+    try:
+        outline_client = PatchedOutlineVPN(api_url=ApiUrl)
+
+        server_information = outline_client.get_server_information()
+    except Exception as e:
+        return response
+
+    outline_client.set_metrics_status(metricsEnabled)
+
+    return response
+
+
 @app.post("/set-port", response_class=HTMLResponse)
 async def set_port(request: Request, portForNewAccessKeys: int = Form(), ApiUrl: t.Union[str, None] = Cookie(default=None)):
     response = RedirectResponse('/', status_code=status.HTTP_302_FOUND)

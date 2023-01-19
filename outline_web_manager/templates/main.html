@@ -269,6 +269,27 @@
           <a class="list-group-item d-flex gap-3 py-3" aria-current="true">
             <div class="d-flex gap-2 w-100 justify-content-between">
               <div class="w-100">
+                <h6 class="mb-0 opacity-75">Share anonymous metrics</h6>
+                <form class="row g-3" action="/set-metrics" method="POST">
+                  <div class="form-check">
+                    <input class="form-check-input" type="checkbox" id="metricsEnabled" name="metricsEnabled" {% if server_information['metricsEnabled'] %}checked{% endif %}>
+                    <label class="form-check-label" for="metricsEnabled">
+                      Share anonymous metrics
+                    </label>
+                    <button type="submit" class="btn btn-outline-secondary tooltipped tooltipped-n" aria-label="Change share metrics">
+                      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-pencil-square" viewBox="0 0 16 16">
+                        <path d="M15.502 1.94a.5.5 0 0 1 0 .706L14.459 3.69l-2-2L13.502.646a.5.5 0 0 1 .707 0l1.293 1.293zm-1.75 2.456-2-2L4.939 9.21a.5.5 0 0 0-.121.196l-.805 2.414a.25.25 0 0 0 .316.316l2.414-.805a.5.5 0 0 0 .196-.12l6.813-6.814z"/>
+                        <path fill-rule="evenodd" d="M1 13.5A1.5 1.5 0 0 0 2.5 15h11a1.5 1.5 0 0 0 1.5-1.5v-6a.5.5 0 0 0-1 0v6a.5.5 0 0 1-.5.5h-11a.5.5 0 0 1-.5-.5v-11a.5.5 0 0 1 .5-.5H9a.5.5 0 0 0 0-1H2.5A1.5 1.5 0 0 0 1 2.5v11z"/>
+                      </svg>
+                    </button>
+                  </div>
+                </form>
+              </div>
+            </div>
+          </a>
+          <a class="list-group-item d-flex gap-3 py-3" aria-current="true">
+            <div class="d-flex gap-2 w-100 justify-content-between">
+              <div class="w-100">
                 <h6 class="mb-0 opacity-75">Server version</h6>
                 <p class="mb-0">{{ server_information['version'] }}</p>
               </div>
