@@ -75,7 +75,7 @@
 
   <body>
     <div class="col-lg-8 mx-auto p-3">
-      <header class="d-flex flex-wrap justify-content-center py-3 mb-4 border-bottom">
+      <header class="d-flex flex-wrap justify-content-center py-3 mb-5 border-bottom">
         <a href="/" class="d-flex align-items-center mb-md-0 me-md-auto text-dark text-decoration-none">
           <img class="me-2" src="/static/images/outlinevpn.png" alt="" width="32" height="32">
           <span class="fs-4">{{ server_information['name'] }}</span>
@@ -87,17 +87,8 @@
       </header>
 
       <main>
-        <ul class="nav nav-tabs" id="outlineWebManagerTab" role="tablist">
-          <li class="nav-item" role="presentation">
-            <button class="nav-link active" id="keys-tab" data-bs-toggle="tab" data-bs-target="#keys-tab-pane" type="button" role="tab" aria-controls="keys-tab-pane" aria-selected="true">Keys</button>
-          </li>
-          <li class="nav-item" role="presentation">
-            <button class="nav-link" id="server-tab" data-bs-toggle="tab" data-bs-target="#server-tab-pane" type="button" role="tab" aria-controls="server-tab-pane" aria-selected="false">Server</button>
-          </li>
-        </ul>
-        <div class="tab-content" id="outlineWebManagerContent">
-          <div class="tab-pane fade show active" id="keys-tab-pane" role="tabpanel" aria-labelledby="keys-tab" tabindex="0">
-            <table class="table mb-4">
+        <h3>Keys</h3>
+        <table class="table mb-4">
           <thead>
             <tr>
               <th scope="col">#</th>
@@ -130,7 +121,7 @@
                 <td>
                   <form action="/set-data-limit/{{ key.key_id }}" method="POST">
                     <div class="input-group">
-                      <input type="text" class="form-control" placeholder="{% if key.data_limit or 'accessKeyDataLimit' in server_information %}{{ '%.0f'|format((key.data_limit or server_information['accessKeyDataLimit']['bytes']) / 1000 / 1000 / 1000) }} GB{% else %}personal limit (GB)...{% endif %}" name="dataLimit">
+                      <input type="text" class="form-control" placeholder="{% if key.data_limit or 'accessKeyDataLimit' in server_information %}{{ '%.0f'|format((key.data_limit or server_information['accessKeyDataLimit']['bytes']) / 1000 / 1000 / 1000) }} GB{% else %}<Enter personal limit (GB)>{% endif %}" name="dataLimit">
                       <button type="submit" class="btn btn-secondary tooltipped tooltipped-n" aria-label="Change limit">
                         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-pencil-square" viewBox="0 0 16 16">
                           <path d="M15.502 1.94a.5.5 0 0 1 0 .706L14.459 3.69l-2-2L13.502.646a.5.5 0 0 1 .707 0l1.293 1.293zm-1.75 2.456-2-2L4.939 9.21a.5.5 0 0 0-.121.196l-.805 2.414a.25.25 0 0 0 .316.316l2.414-.805a.5.5 0 0 0 .196-.12l6.813-6.814z"/>
@@ -170,147 +161,145 @@
           </tbody>
         </table>
 
-            <form class="row g-3 mb-3" action="/add" method="POST">
+        <form class="row g-3 mb-5" action="/add" method="POST">
           <div class="input-group">
-            <input type="text" class="form-control" id="newKeyName" name="newKeyName" placeholder="new key name...">
+            <input type="text" class="form-control" id="newKeyName" name="newKeyName" placeholder="<Enter new key name>">
             <button type="submit" class="btn btn-success">Create new key</button>
           </div>
         </form>
-          </div>
-          <div class="tab-pane fade" id="server-tab-pane" role="tabpanel" aria-labelledby="server-tab" tabindex="0">
-            <div class="list-group w-auto">
-              <a class="list-group-item d-flex gap-3 py-3" aria-current="true" style="border-top: none; border-top-right-radius: unset; border-top-left-radius: unset;">
-                <div class="d-flex gap-2 w-100 justify-content-between">
-                  <div class="w-100">
-                    <h6 class="mb-0 opacity-75">Server name</h6>
-                    <form class="row g-3" action="/set-server-name" method="POST">
-                      <div class="input-group">
-                        <input type="text" class="form-control" id="serverName" name="serverName" placeholder="{{ server_information['name'] }}">
-                        <button type="submit" class="btn btn-secondary tooltipped tooltipped-n" aria-label="Rename">
-                          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-pencil-square" viewBox="0 0 16 16">
-                            <path d="M15.502 1.94a.5.5 0 0 1 0 .706L14.459 3.69l-2-2L13.502.646a.5.5 0 0 1 .707 0l1.293 1.293zm-1.75 2.456-2-2L4.939 9.21a.5.5 0 0 0-.121.196l-.805 2.414a.25.25 0 0 0 .316.316l2.414-.805a.5.5 0 0 0 .196-.12l6.813-6.814z"/>
-                            <path fill-rule="evenodd" d="M1 13.5A1.5 1.5 0 0 0 2.5 15h11a1.5 1.5 0 0 0 1.5-1.5v-6a.5.5 0 0 0-1 0v6a.5.5 0 0 1-.5.5h-11a.5.5 0 0 1-.5-.5v-11a.5.5 0 0 1 .5-.5H9a.5.5 0 0 0 0-1H2.5A1.5 1.5 0 0 0 1 2.5v11z"/>
-                          </svg>
-                        </button>
-                      </div>
-                    </form>
+
+        <h3>Server</h3>
+        <div class="list-group w-auto">
+          <a class="list-group-item d-flex gap-3 py-3" aria-current="true">
+            <div class="d-flex gap-2 w-100 justify-content-between">
+              <div class="w-100">
+                <h6 class="mb-0 opacity-75">Server name</h6>
+                <form class="row g-3" action="/set-server-name" method="POST">
+                  <div class="input-group">
+                    <input type="text" class="form-control" id="serverName" name="serverName" placeholder="{{ server_information['name'] }}">
+                    <button type="submit" class="btn btn-secondary tooltipped tooltipped-n" aria-label="Rename">
+                      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-pencil-square" viewBox="0 0 16 16">
+                        <path d="M15.502 1.94a.5.5 0 0 1 0 .706L14.459 3.69l-2-2L13.502.646a.5.5 0 0 1 .707 0l1.293 1.293zm-1.75 2.456-2-2L4.939 9.21a.5.5 0 0 0-.121.196l-.805 2.414a.25.25 0 0 0 .316.316l2.414-.805a.5.5 0 0 0 .196-.12l6.813-6.814z"/>
+                        <path fill-rule="evenodd" d="M1 13.5A1.5 1.5 0 0 0 2.5 15h11a1.5 1.5 0 0 0 1.5-1.5v-6a.5.5 0 0 0-1 0v6a.5.5 0 0 1-.5.5h-11a.5.5 0 0 1-.5-.5v-11a.5.5 0 0 1 .5-.5H9a.5.5 0 0 0 0-1H2.5A1.5 1.5 0 0 0 1 2.5v11z"/>
+                      </svg>
+                    </button>
                   </div>
-                </div>
-              </a>
-              <a class="list-group-item d-flex gap-3 py-3" aria-current="true">
-                <div class="d-flex gap-2 w-100 justify-content-between">
-                  <div class="w-100">
-                    <h6 class="mb-0 opacity-75">Data limits</h6>
-                    <form class="row g-3" action="/set-data-limit" method="POST">
-                      <div class="input-group">
-                        <input type="text" class="form-control" id="dataLimitForAllKeys" name="dataLimitForAllKeys" placeholder="{% if 'accessKeyDataLimit' in server_information %}{{ '%.0f'|format(server_information['accessKeyDataLimit']['bytes'] / 1000 / 1000 / 1000) }} GB{% else %}Set a 30 day trailing data transfer limit (GB) for access keys{% endif %}">
-                        <button type="submit" class="btn btn-secondary tooltipped tooltipped-n" aria-label="Set global limit">
-                          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-pencil-square" viewBox="0 0 16 16">
-                            <path d="M15.502 1.94a.5.5 0 0 1 0 .706L14.459 3.69l-2-2L13.502.646a.5.5 0 0 1 .707 0l1.293 1.293zm-1.75 2.456-2-2L4.939 9.21a.5.5 0 0 0-.121.196l-.805 2.414a.25.25 0 0 0 .316.316l2.414-.805a.5.5 0 0 0 .196-.12l6.813-6.814z"/>
-                            <path fill-rule="evenodd" d="M1 13.5A1.5 1.5 0 0 0 2.5 15h11a1.5 1.5 0 0 0 1.5-1.5v-6a.5.5 0 0 0-1 0v6a.5.5 0 0 1-.5.5h-11a.5.5 0 0 1-.5-.5v-11a.5.5 0 0 1 .5-.5H9a.5.5 0 0 0 0-1H2.5A1.5 1.5 0 0 0 1 2.5v11z"/>
-                          </svg>
-                        </button>
-                        {% if 'accessKeyDataLimit' in server_information %}
-                          <button type="button" onclick="window.location.href='/delete-data-limit'" class="btn btn-danger tooltipped tooltipped-n" aria-label="Delete limit">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-trash3-fill" viewBox="0 0 16 16">
-                              <path d="M11 1.5v1h3.5a.5.5 0 0 1 0 1h-.538l-.853 10.66A2 2 0 0 1 11.115 16h-6.23a2 2 0 0 1-1.994-1.84L2.038 3.5H1.5a.5.5 0 0 1 0-1H5v-1A1.5 1.5 0 0 1 6.5 0h3A1.5 1.5 0 0 1 11 1.5Zm-5 0v1h4v-1a.5.5 0 0 0-.5-.5h-3a.5.5 0 0 0-.5.5ZM4.5 5.029l.5 8.5a.5.5 0 1 0 .998-.06l-.5-8.5a.5.5 0 1 0-.998.06Zm6.53-.528a.5.5 0 0 0-.528.47l-.5 8.5a.5.5 0 0 0 .998.058l.5-8.5a.5.5 0 0 0-.47-.528ZM8 4.5a.5.5 0 0 0-.5.5v8.5a.5.5 0 0 0 1 0V5a.5.5 0 0 0-.5-.5Z"></path>
-                            </svg>
-                            <span class="visually-hidden">Delete</span>
-                          </button>
-                        {% endif %}
-                      </div>
-                    </form>
-                  </div>
-                </div>
-              </a>
-              <a class="list-group-item d-flex gap-3 py-3" aria-current="true">
-                <div class="d-flex gap-2 w-100 justify-content-between">
-                  <div class="w-100">
-                    <h6 class="mb-0 opacity-75">Data transferred / last 30 days</h6>
-                    <p class="mb-0">{{ "%.1f"|format((total_month_usage or 0) / 1000 / 1000 / 1000) }} GB</p>
-                  </div>
-                </div>
-              </a>
-              <a class="list-group-item d-flex gap-3 py-3" aria-current="true">
-                <div class="d-flex gap-2 w-100 justify-content-between">
-                  <div class="w-100">
-                    <h6 class="mb-0 opacity-75">Port for new access key</h6>
-                    <form class="row g-3" action="/set-port" method="POST">
-                      <div class="input-group">
-                        <input type="text" class="form-control" id="portForNewAccessKeys" name="portForNewAccessKeys" placeholder="{{ server_information['portForNewAccessKeys'] }}">
-                        <button type="submit" class="btn btn-secondary tooltipped tooltipped-n" aria-label="Change port">
-                          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-pencil-square" viewBox="0 0 16 16">
-                            <path d="M15.502 1.94a.5.5 0 0 1 0 .706L14.459 3.69l-2-2L13.502.646a.5.5 0 0 1 .707 0l1.293 1.293zm-1.75 2.456-2-2L4.939 9.21a.5.5 0 0 0-.121.196l-.805 2.414a.25.25 0 0 0 .316.316l2.414-.805a.5.5 0 0 0 .196-.12l6.813-6.814z"/>
-                            <path fill-rule="evenodd" d="M1 13.5A1.5 1.5 0 0 0 2.5 15h11a1.5 1.5 0 0 0 1.5-1.5v-6a.5.5 0 0 0-1 0v6a.5.5 0 0 1-.5.5h-11a.5.5 0 0 1-.5-.5v-11a.5.5 0 0 1 .5-.5H9a.5.5 0 0 0 0-1H2.5A1.5 1.5 0 0 0 1 2.5v11z"/>
-                          </svg>
-                        </button>
-                      </div>
-                    </form>
-                  </div>
-                </div>
-              </a>
-              <a class="list-group-item d-flex gap-3 py-3" aria-current="true">
-                <div class="d-flex gap-2 w-100 justify-content-between">
-                  <div class="w-100">
-                    <h6 class="mb-0 opacity-75">Hostname</h6>
-                    <form class="row g-3" action="/set-hostname" method="POST">
-                      <div class="input-group">
-                        <input type="text" class="form-control" id="hostnameForAccessKeys" name="hostnameForAccessKeys" placeholder="{{ server_information['hostnameForAccessKeys'] }}">
-                        <button type="submit" class="btn btn-secondary tooltipped tooltipped-n" aria-label="Change hostname">
-                          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-pencil-square" viewBox="0 0 16 16">
-                            <path d="M15.502 1.94a.5.5 0 0 1 0 .706L14.459 3.69l-2-2L13.502.646a.5.5 0 0 1 .707 0l1.293 1.293zm-1.75 2.456-2-2L4.939 9.21a.5.5 0 0 0-.121.196l-.805 2.414a.25.25 0 0 0 .316.316l2.414-.805a.5.5 0 0 0 .196-.12l6.813-6.814z"/>
-                            <path fill-rule="evenodd" d="M1 13.5A1.5 1.5 0 0 0 2.5 15h11a1.5 1.5 0 0 0 1.5-1.5v-6a.5.5 0 0 0-1 0v6a.5.5 0 0 1-.5.5h-11a.5.5 0 0 1-.5-.5v-11a.5.5 0 0 1 .5-.5H9a.5.5 0 0 0 0-1H2.5A1.5 1.5 0 0 0 1 2.5v11z"/>
-                          </svg>
-                        </button>
-                      </div>
-                    </form>
-                  </div>
-                </div>
-              </a>
-              <a class="list-group-item d-flex gap-3 py-3" aria-current="true">
-                <div class="d-flex gap-2 w-100 justify-content-between">
-                  <div class="w-100">
-                    <h6 class="mb-0 opacity-75">Created</h6>
-                    <p class="mb-0">{{ server_creation }}</p>
-                  </div>
-                </div>
-              </a>
-              <a class="list-group-item d-flex gap-3 py-3" aria-current="true">
-                <div class="d-flex gap-2 w-100 justify-content-between">
-                  <div class="w-100">
-                    <h6 class="mb-0 opacity-75">Server ID</h6>
-                    <p class="mb-0">{{ server_information['serverId'] }}</p>
-                  </div>
-                </div>
-              </a>
-              <a class="list-group-item d-flex gap-3 py-3" aria-current="true">
-                <div class="d-flex gap-2 w-100 justify-content-between">
-                  <div>
-                    <h6 class="mb-0 opacity-75">Share anonymous metrics</h6>
-                    <form action="/set-metrics" method="POST">
-                      <div class="form-check form-check-inline">
-                        <input type="radio" class="form-check-input" name="metrics" value="true" id="metricsEnabled" autocomplete="off" {% if server_information['metricsEnabled'] %}checked{% endif %}>
-                        <label class="form-check-label" for="metricsEnabled">Enabled</label>
-                      </div>
-                      <div class="form-check form-check-inline">
-                        <input type="radio" class="form-check-input" name="metrics" value="false" id="metricsDisabled" autocomplete="off" {% if not server_information['metricsEnabled'] %}checked{% endif %}>
-                        <label class="form-check-label" for="metricsDisabled">Disabled</label>
-                      </div>
-                      <button type="submit" class="btn btn-secondary">Apply</button>
-                    </form>
-                  </div>
-                </div>
-              </a>
-              <a class="list-group-item d-flex gap-3 py-3" aria-current="true">
-                  <div class="d-flex gap-2 w-100 justify-content-between">
-                    <div class="w-100">
-                      <h6 class="mb-0 opacity-75">Server version</h6>
-                      <p class="mb-0">{{ server_information['version'] }}</p>
-                    </div>
-                  </div>
-                </a>
+                </form>
               </div>
-          </div>
+            </div>
+          </a>
+          <a class="list-group-item d-flex gap-3 py-3" aria-current="true">
+            <div class="d-flex gap-2 w-100 justify-content-between">
+              <div class="w-100">
+                <h6 class="mb-0 opacity-75">Data limits</h6>
+                <form class="row g-3" action="/set-data-limit" method="POST">
+                  <div class="input-group">
+                    <input type="text" class="form-control" id="dataLimitForAllKeys" name="dataLimitForAllKeys" placeholder="{% if 'accessKeyDataLimit' in server_information %}{{ '%.0f'|format(server_information['accessKeyDataLimit']['bytes'] / 1000 / 1000 / 1000) }} GB{% else %}<Set a 30 day trailing data transfer limit (GB) for access keys>{% endif %}">
+                    <button type="submit" class="btn btn-secondary tooltipped tooltipped-n" aria-label="Set global limit">
+                      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-pencil-square" viewBox="0 0 16 16">
+                        <path d="M15.502 1.94a.5.5 0 0 1 0 .706L14.459 3.69l-2-2L13.502.646a.5.5 0 0 1 .707 0l1.293 1.293zm-1.75 2.456-2-2L4.939 9.21a.5.5 0 0 0-.121.196l-.805 2.414a.25.25 0 0 0 .316.316l2.414-.805a.5.5 0 0 0 .196-.12l6.813-6.814z"/>
+                        <path fill-rule="evenodd" d="M1 13.5A1.5 1.5 0 0 0 2.5 15h11a1.5 1.5 0 0 0 1.5-1.5v-6a.5.5 0 0 0-1 0v6a.5.5 0 0 1-.5.5h-11a.5.5 0 0 1-.5-.5v-11a.5.5 0 0 1 .5-.5H9a.5.5 0 0 0 0-1H2.5A1.5 1.5 0 0 0 1 2.5v11z"/>
+                      </svg>
+                    </button>
+                    {% if 'accessKeyDataLimit' in server_information %}
+                      <button type="button" onclick="window.location.href='/delete-data-limit'" class="btn btn-danger tooltipped tooltipped-n" aria-label="Delete limit">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-trash3-fill" viewBox="0 0 16 16">
+                          <path d="M11 1.5v1h3.5a.5.5 0 0 1 0 1h-.538l-.853 10.66A2 2 0 0 1 11.115 16h-6.23a2 2 0 0 1-1.994-1.84L2.038 3.5H1.5a.5.5 0 0 1 0-1H5v-1A1.5 1.5 0 0 1 6.5 0h3A1.5 1.5 0 0 1 11 1.5Zm-5 0v1h4v-1a.5.5 0 0 0-.5-.5h-3a.5.5 0 0 0-.5.5ZM4.5 5.029l.5 8.5a.5.5 0 1 0 .998-.06l-.5-8.5a.5.5 0 1 0-.998.06Zm6.53-.528a.5.5 0 0 0-.528.47l-.5 8.5a.5.5 0 0 0 .998.058l.5-8.5a.5.5 0 0 0-.47-.528ZM8 4.5a.5.5 0 0 0-.5.5v8.5a.5.5 0 0 0 1 0V5a.5.5 0 0 0-.5-.5Z"></path>
+                        </svg>
+                        <span class="visually-hidden">Delete</span>
+                      </button>
+                    {% endif %}
+                  </div>
+                </form>
+              </div>
+            </div>
+          </a>
+          <a class="list-group-item d-flex gap-3 py-3" aria-current="true">
+            <div class="d-flex gap-2 w-100 justify-content-between">
+              <div class="w-100">
+                <h6 class="mb-0 opacity-75">Data transferred / last 30 days</h6>
+                <p class="mb-0">{{ "%.1f"|format((total_month_usage or 0) / 1000 / 1000 / 1000) }} GB</p>
+              </div>
+            </div>
+          </a>
+          <a class="list-group-item d-flex gap-3 py-3" aria-current="true">
+            <div class="d-flex gap-2 w-100 justify-content-between">
+              <div class="w-100">
+                <h6 class="mb-0 opacity-75">Port for new access key</h6>
+                <form class="row g-3" action="/set-port" method="POST">
+                  <div class="input-group">
+                    <input type="text" class="form-control" id="portForNewAccessKeys" name="portForNewAccessKeys" placeholder="{{ server_information['portForNewAccessKeys'] }}">
+                    <button type="submit" class="btn btn-secondary tooltipped tooltipped-n" aria-label="Change port">
+                      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-pencil-square" viewBox="0 0 16 16">
+                        <path d="M15.502 1.94a.5.5 0 0 1 0 .706L14.459 3.69l-2-2L13.502.646a.5.5 0 0 1 .707 0l1.293 1.293zm-1.75 2.456-2-2L4.939 9.21a.5.5 0 0 0-.121.196l-.805 2.414a.25.25 0 0 0 .316.316l2.414-.805a.5.5 0 0 0 .196-.12l6.813-6.814z"/>
+                        <path fill-rule="evenodd" d="M1 13.5A1.5 1.5 0 0 0 2.5 15h11a1.5 1.5 0 0 0 1.5-1.5v-6a.5.5 0 0 0-1 0v6a.5.5 0 0 1-.5.5h-11a.5.5 0 0 1-.5-.5v-11a.5.5 0 0 1 .5-.5H9a.5.5 0 0 0 0-1H2.5A1.5 1.5 0 0 0 1 2.5v11z"/>
+                      </svg>
+                    </button>
+                  </div>
+                </form>
+              </div>
+            </div>
+          </a>
+          <a class="list-group-item d-flex gap-3 py-3" aria-current="true">
+            <div class="d-flex gap-2 w-100 justify-content-between">
+              <div class="w-100">
+                <h6 class="mb-0 opacity-75">Hostname</h6>
+                <form class="row g-3" action="/set-hostname" method="POST">
+                  <div class="input-group">
+                    <input type="text" class="form-control" id="hostnameForAccessKeys" name="hostnameForAccessKeys" placeholder="{{ server_information['hostnameForAccessKeys'] }}">
+                    <button type="submit" class="btn btn-secondary tooltipped tooltipped-n" aria-label="Change hostname">
+                      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-pencil-square" viewBox="0 0 16 16">
+                        <path d="M15.502 1.94a.5.5 0 0 1 0 .706L14.459 3.69l-2-2L13.502.646a.5.5 0 0 1 .707 0l1.293 1.293zm-1.75 2.456-2-2L4.939 9.21a.5.5 0 0 0-.121.196l-.805 2.414a.25.25 0 0 0 .316.316l2.414-.805a.5.5 0 0 0 .196-.12l6.813-6.814z"/>
+                        <path fill-rule="evenodd" d="M1 13.5A1.5 1.5 0 0 0 2.5 15h11a1.5 1.5 0 0 0 1.5-1.5v-6a.5.5 0 0 0-1 0v6a.5.5 0 0 1-.5.5h-11a.5.5 0 0 1-.5-.5v-11a.5.5 0 0 1 .5-.5H9a.5.5 0 0 0 0-1H2.5A1.5 1.5 0 0 0 1 2.5v11z"/>
+                      </svg>
+                    </button>
+                  </div>
+                </form>
+              </div>
+            </div>
+          </a>
+          <a class="list-group-item d-flex gap-3 py-3" aria-current="true">
+            <div class="d-flex gap-2 w-100 justify-content-between">
+              <div class="w-100">
+                <h6 class="mb-0 opacity-75">Created</h6>
+                <p class="mb-0">{{ server_creation }}</p>
+              </div>
+            </div>
+          </a>
+          <a class="list-group-item d-flex gap-3 py-3" aria-current="true">
+            <div class="d-flex gap-2 w-100 justify-content-between">
+              <div class="w-100">
+                <h6 class="mb-0 opacity-75">Server ID</h6>
+                <p class="mb-0">{{ server_information['serverId'] }}</p>
+              </div>
+            </div>
+          </a>
+          <a class="list-group-item d-flex gap-3 py-3" aria-current="true">
+            <div class="d-flex gap-2 w-100 justify-content-between">
+              <div>
+                <h6 class="mb-0 opacity-75">Share anonymous metrics</h6>
+                <form action="/set-metrics" method="POST">
+                  <div class="form-check form-check-inline">
+                    <input type="radio" class="form-check-input" name="metrics" value="true" id="metricsEnabled" autocomplete="off" {% if server_information['metricsEnabled'] %}checked{% endif %}>
+                    <label class="form-check-label" for="metricsEnabled">Enabled</label>
+                  </div>
+                  <div class="form-check form-check-inline">
+                    <input type="radio" class="form-check-input" name="metrics" value="false" id="metricsDisabled" autocomplete="off" {% if not server_information['metricsEnabled'] %}checked{% endif %}>
+                    <label class="form-check-label" for="metricsDisabled">Disabled</label>
+                  </div>
+                  <button type="submit" class="btn btn-secondary">Apply</button>
+                </form>
+              </div>
+            </div>
+          </a>
+          <a class="list-group-item d-flex gap-3 py-3" aria-current="true">
+              <div class="d-flex gap-2 w-100 justify-content-between">
+                <div class="w-100">
+                  <h6 class="mb-0 opacity-75">Server version</h6>
+                  <p class="mb-0">{{ server_information['version'] }}</p>
+                </div>
+              </div>
+            </a>
         </div>
       </main>
 
