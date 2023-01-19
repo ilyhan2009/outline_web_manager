@@ -48,7 +48,7 @@ async def root(request: Request, ApiUrl: str = Form()):
     return response
 
 
-@app.post("/new-key", response_class=HTMLResponse)
+@app.post("/add", response_class=HTMLResponse)
 async def create_new_key(request: Request, newKeyName: str = Form(), ApiUrl: t.Union[str, None] = Cookie(default=None)):
     response = RedirectResponse('/', status_code=status.HTTP_302_FOUND)
 
@@ -60,6 +60,22 @@ async def create_new_key(request: Request, newKeyName: str = Form(), ApiUrl: t.U
         return response
 
     outline_client.create_key(newKeyName)
+
+    return response
+
+
+@app.get("/delete/{key_id}", response_class=HTMLResponse)
+async def delete_key(request: Request, key_id: int, ApiUrl: t.Union[str, None] = Cookie(default=None)):
+    response = RedirectResponse('/')
+
+    try:
+        outline_client = OutlineVPN(api_url=ApiUrl)
+
+        server_information = outline_client.get_server_information()
+    except Exception as e:
+        return response
+
+    outline_client.delete_key(key_id)
 
     return response
 
