@@ -8,12 +8,6 @@ networks:
        - subnet: 172.20.0.0/16
          gateway: 172.20.0.1
 
-volumes:
-  Server:
-    external: true
-  rabbitmq_data:
-  rabbitmq_log:
-
 services:
   outline_web_manager:
       container_name: outline_web_manager
