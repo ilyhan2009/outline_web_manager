@@ -69,6 +69,7 @@
     <link href="/static/dist/css/grid.css" rel="stylesheet">
 
     <script src="/static/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="/static/dist/js/clipboard.min.js"></script>
   </head>
   <body>
     
@@ -117,7 +118,7 @@
         </div>
         <div class="col-2 themed-grid-col">
           <div class="btn-group">
-                <button type="button" class="btn btn-outline-secondary" data-bs-toggle="tooltip" data-bs-title="Copy Access Url">
+                <button type="button" class="btn btn-outline-secondary btn-clipboard" data-clipboard-text="{{ key.access_url }}" data-bs-toggle="tooltip" data-bs-title="Copy Access Url">
                   <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-clipboard-fill" viewBox="0 0 16 16">
                     <path fill-rule="evenodd" d="M10 1.5a.5.5 0 0 0-.5-.5h-3a.5.5 0 0 0-.5.5v1a.5.5 0 0 0 .5.5h3a.5.5 0 0 0 .5-.5v-1Zm-5 0A1.5 1.5 0 0 1 6.5 0h3A1.5 1.5 0 0 1 11 1.5v1A1.5 1.5 0 0 1 9.5 4h-3A1.5 1.5 0 0 1 5 2.5v-1Zm-2 0h1v1A2.5 2.5 0 0 0 6.5 5h3A2.5 2.5 0 0 0 12 2.5v-1h1a2 2 0 0 1 2 2V14a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V3.5a2 2 0 0 1 2-2Z"></path>
                   </svg>
@@ -141,19 +142,14 @@
       </div>
 
     <form class="row g-3" action="/add" method="POST">
-  <div class="col-7">
-    <label for="newKeyName" class="visually-hidden">New key name</label>
-    <input type="text" class="form-control" id="newKeyName" name="newKeyName" placeholder="new key name...">
-  </div>
-  <div class="col-5">
-    <button type="submit" class="btn btn-primary mb-3">Create new key</button>
-  </div>
-
-      <a tabindex="0" class="btn btn-lg btn-danger" role="button" data-bs-toggle="popover" data-bs-trigger="focus" data-bs-title="Dismissible popover" data-bs-content="And here's some amazing content. It's very engaging. Right?">Dismissible popover</a>
-
-      <p class="muted">Placeholder text to demonstrate some <a href="#" data-bs-toggle="tooltip" data-bs-title="Default tooltip">inline links</a> with tooltips. This is now just filler, no killer. Content placed here just to mimic the presence of <a href="#" data-bs-toggle="tooltip" data-bs-title="Another tooltip">real text</a>. And all that just to give you an idea of how tooltips would look when used in real-world situations. So hopefully you've now seen how <a href="#" data-bs-toggle="tooltip" data-bs-title="Another one here too">these tooltips on links</a> can work in practice, once you use them on <a href="#" data-bs-toggle="tooltip" data-bs-title="The last tip!">your own</a> site or project.
-</p>
-</form>
+      <div class="col-7">
+        <label for="newKeyName" class="visually-hidden">New key name</label>
+        <input type="text" class="form-control" id="newKeyName" name="newKeyName" placeholder="new key name...">
+      </div>
+      <div class="col-5">
+        <button type="submit" class="btn btn-primary mb-3">Create new key</button>
+      </div>
+    </form>
   </main>
   <footer class="pt-5 my-5 text-muted border-top">
     Created by the Bootstrap team &middot; &copy; 2022
@@ -164,8 +160,7 @@
       const tooltipTriggerList = document.querySelectorAll('[data-bs-toggle="tooltip"]');
       const tooltipList = [...tooltipTriggerList].map(tooltipTriggerEl => new bootstrap.Tooltip(tooltipTriggerEl));
 
-      const popoverTriggerList = document.querySelectorAll('[data-bs-toggle="popover"]');
-      const popoverList = [...popoverTriggerList].map(popoverTriggerEl => new bootstrap.Popover(popoverTriggerEl));
+      new ClipboardJS('.btn-clipboard');
     </script>
   </body>
 </html>
