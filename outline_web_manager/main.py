@@ -11,7 +11,7 @@ from fastapi.responses import HTMLResponse, RedirectResponse
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
 import starlette.status as status
-from outline_vpn.outline_vpn import OutlineVPN, OutlineKey
+from outline_vpn.outline_vpn import OutlineVPN
 
 
 app = FastAPI()
@@ -19,46 +19,6 @@ app = FastAPI()
 app.mount("/static", StaticFiles(directory="static"), name="static")
 
 templates = Jinja2Templates(directory="templates")
-
-
-@dataclass
-class PatchedOutlineKey(OutlineKey):
-    data_limit: int
-
-
-class PatchedOutlineVPN(OutlineVPN):
-    def get_keys(self):
-        """Get all keys in the outline server"""
-        response = requests.get(f"{self.api_url}/access-keys/", verify=False)
-        if response.status_code == 200 and "accessKeys" in response.json():
-            response_metrics = requests.get(
-                f"{self.api_url}/metrics/transfer", verify=False
-            )
-            if (
-                response_metrics.status_code >= 400
-                or "bytesTransferredByUserId" not in response_metrics.json()
-            ):
-                raise Exception("Unable to get metrics")
-
-            response_json = response.json()
-            result = []
-            for key in response_json.get("accessKeys"):
-                result.append(
-                    PatchedOutlineKey(
-                        key_id=key.get("id"),
-                        name=key.get("name"),
-                        password=key.get("password"),
-                        port=key.get("port"),
-                        method=key.get("method"),
-                        access_url=key.get("accessUrl"),
-                        data_limit=key.get('dataLimit', {}).get('bytes'),
-                        used_bytes=response_metrics.json()
-                        .get("bytesTransferredByUserId")
-                        .get(key.get("id")),
-                    )
-                )
-            return result
-        raise Exception("Unable to retrieve keys")
 
 
 async def get_outline_client(
@@ -70,7 +30,7 @@ async def get_outline_client(
 
     try:
         parsed = json.loads(outputJsonCookie or outputJsonForm)
-        outline_client = PatchedOutlineVPN(api_url=parsed['apiUrl'], cert_sha256=parsed['certSha256'])
+        outline_client = OutlineVPN(api_url=parsed['apiUrl'], cert_sha256=parsed['certSha256'])
 
         server_information = outline_client.get_server_information()
     except Exception as e:
@@ -80,7 +40,7 @@ async def get_outline_client(
 
 
 @app.get("/", response_class=HTMLResponse)
-async def root(request: Request, outline_client: PatchedOutlineVPN = Depends(get_outline_client)):
+async def root(request: Request, outline_client: OutlineVPN = Depends(get_outline_client)):
     if not outline_client:
         return templates.TemplateResponse("sign-in.html", {"request": request})
 
@@ -102,7 +62,7 @@ async def root(request: Request, outline_client: PatchedOutlineVPN = Depends(get
 
 
 @app.post("/sign-in", response_class=HTMLResponse)
-async def root(outline_client: PatchedOutlineVPN = Depends(get_outline_client), outputJsonForm: str = Form()):
+async def root(outline_client: OutlineVPN = Depends(get_outline_client), outputJsonForm: str = Form()):
     response = RedirectResponse('/', status_code=status.HTTP_302_FOUND)
 
     if not outline_client:
@@ -117,7 +77,7 @@ async def root(outline_client: PatchedOutlineVPN = Depends(get_outline_client), 
 @app.post("/add", response_class=HTMLResponse)
 async def create_new_key(
     newKeyName: str = Form(),
-    outline_client: PatchedOutlineVPN = Depends(get_outline_client),
+    outline_client: OutlineVPN = Depends(get_outline_client),
 ):
     response = RedirectResponse('/', status_code=status.HTTP_302_FOUND)
 
@@ -130,7 +90,7 @@ async def create_new_key(
 async def rename_key_name(
     key_id: int,
     keyName: str = Form(),
-    outline_client: PatchedOutlineVPN = Depends(get_outline_client),
+    outline_client: OutlineVPN = Depends(get_outline_client),
 ):
     response = RedirectResponse('/', status_code=status.HTTP_302_FOUND)
 
@@ -142,7 +102,7 @@ async def rename_key_name(
 @app.post("/delete/{key_id}", response_class=HTMLResponse)
 async def delete_key(
     key_id: int,
-    outline_client: PatchedOutlineVPN = Depends(get_outline_client),
+    outline_client: OutlineVPN = Depends(get_outline_client),
 ):
     response = RedirectResponse('/', status_code=status.HTTP_302_FOUND)
 
@@ -154,7 +114,7 @@ async def delete_key(
 @app.post("/set-server-name", response_class=HTMLResponse)
 async def set_server_name(
     serverName: str = Form(),
-    outline_client: PatchedOutlineVPN = Depends(get_outline_client),
+    outline_client: OutlineVPN = Depends(get_outline_client),
 ):
     response = RedirectResponse('/', status_code=status.HTTP_302_FOUND)
 
@@ -166,7 +126,7 @@ async def set_server_name(
 @app.post("/set-hostname", response_class=HTMLResponse)
 async def set_hostname(
     hostnameForAccessKeys: str = Form(),
-    outline_client: PatchedOutlineVPN = Depends(get_outline_client),
+    outline_client: OutlineVPN = Depends(get_outline_client),
 ):
     response = RedirectResponse('/', status_code=status.HTTP_302_FOUND)
 
@@ -178,7 +138,7 @@ async def set_hostname(
 @app.post("/set-metrics", response_class=HTMLResponse)
 async def set_hostname(
     metrics: bool = Form(),
-    outline_client: PatchedOutlineVPN = Depends(get_outline_client),
+    outline_client: OutlineVPN = Depends(get_outline_client),
 ):
     response = RedirectResponse('/', status_code=status.HTTP_302_FOUND)
 
@@ -190,7 +150,7 @@ async def set_hostname(
 @app.post("/set-port", response_class=HTMLResponse)
 async def set_port(
     portForNewAccessKeys: int = Form(),
-    outline_client: PatchedOutlineVPN = Depends(get_outline_client),
+    outline_client: OutlineVPN = Depends(get_outline_client),
 ):
     response = RedirectResponse('/', status_code=status.HTTP_302_FOUND)
 
@@ -202,7 +162,7 @@ async def set_port(
 @app.post("/set-data-limit", response_class=HTMLResponse)
 async def set_data_limit(
     dataLimitForAllKeys: int = Form(),
-    outline_client: PatchedOutlineVPN = Depends(get_outline_client),
+    outline_client: OutlineVPN = Depends(get_outline_client),
 ):
     response = RedirectResponse('/', status_code=status.HTTP_302_FOUND)
 
@@ -213,7 +173,7 @@ async def set_data_limit(
 
 @app.post("/delete-data-limit", response_class=HTMLResponse)
 async def delete_data_limit(
-    outline_client: PatchedOutlineVPN = Depends(get_outline_client),
+    outline_client: OutlineVPN = Depends(get_outline_client),
 ):
     response = RedirectResponse('/', status_code=status.HTTP_302_FOUND)
 
@@ -225,7 +185,7 @@ async def delete_data_limit(
 @app.post("/set-data-limit/{key_id}", response_class=HTMLResponse)
 async def set_key_data_limit(
     key_id: int, dataLimit: int = Form(),
-    outline_client: PatchedOutlineVPN = Depends(get_outline_client),
+    outline_client: OutlineVPN = Depends(get_outline_client),
 ):
     response = RedirectResponse('/', status_code=status.HTTP_302_FOUND)
 
@@ -237,7 +197,7 @@ async def set_key_data_limit(
 @app.post("/delete-data-limit/{key_id}", response_class=HTMLResponse)
 async def delete_key_data_limit(
     key_id: int,
-    outline_client: PatchedOutlineVPN = Depends(get_outline_client),
+    outline_client: OutlineVPN = Depends(get_outline_client),
 ):
     response = RedirectResponse('/', status_code=status.HTTP_302_FOUND)
 
