@@ -1,17 +1,14 @@
 import datetime
-from dataclasses import dataclass
-import requests
 import json
 import typing as t
 
-import uvicorn
-
 from fastapi import FastAPI, Request, Form, Cookie, Depends
-from fastapi.responses import HTMLResponse, RedirectResponse
+from fastapi.responses import RedirectResponse
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
 import starlette.status as status
 from outline_vpn.outline_vpn import OutlineVPN
+import uvicorn
 
 
 app = FastAPI()
@@ -39,7 +36,7 @@ async def get_outline_client(
     return outline_client
 
 
-@app.get("/", response_class=HTMLResponse)
+@app.get("/")
 async def root(request: Request, outline_client: OutlineVPN = Depends(get_outline_client)):
     if not outline_client:
         return templates.TemplateResponse("sign-in.html", {"request": request})
@@ -61,7 +58,7 @@ async def root(request: Request, outline_client: OutlineVPN = Depends(get_outlin
     return templates.TemplateResponse("main.html", data)
 
 
-@app.post("/sign-in", response_class=HTMLResponse)
+@app.post("/sign-in")
 async def root(outline_client: OutlineVPN = Depends(get_outline_client), outputJsonForm: str = Form()):
     response = RedirectResponse('/', status_code=status.HTTP_302_FOUND)
 
@@ -74,7 +71,7 @@ async def root(outline_client: OutlineVPN = Depends(get_outline_client), outputJ
     return response
 
 
-@app.post("/add", response_class=HTMLResponse)
+@app.post("/add")
 async def create_new_key(
     newKeyName: str = Form(),
     outline_client: OutlineVPN = Depends(get_outline_client),
@@ -86,7 +83,7 @@ async def create_new_key(
     return response
 
 
-@app.post("/rename/{key_id}", response_class=HTMLResponse)
+@app.post("/rename/{key_id}")
 async def rename_key_name(
     key_id: int,
     keyName: str = Form(),
@@ -99,7 +96,7 @@ async def rename_key_name(
     return response
 
 
-@app.post("/delete/{key_id}", response_class=HTMLResponse)
+@app.post("/delete/{key_id}")
 async def delete_key(
     key_id: int,
     outline_client: OutlineVPN = Depends(get_outline_client),
@@ -111,7 +108,7 @@ async def delete_key(
     return response
 
 
-@app.post("/set-server-name", response_class=HTMLResponse)
+@app.post("/set-server-name")
 async def set_server_name(
     serverName: str = Form(),
     outline_client: OutlineVPN = Depends(get_outline_client),
@@ -123,7 +120,7 @@ async def set_server_name(
     return response
 
 
-@app.post("/set-hostname", response_class=HTMLResponse)
+@app.post("/set-hostname")
 async def set_hostname(
     hostnameForAccessKeys: str = Form(),
     outline_client: OutlineVPN = Depends(get_outline_client),
@@ -135,7 +132,7 @@ async def set_hostname(
     return response
 
 
-@app.post("/set-metrics", response_class=HTMLResponse)
+@app.post("/set-metrics")
 async def set_hostname(
     metrics: bool = Form(),
     outline_client: OutlineVPN = Depends(get_outline_client),
@@ -147,7 +144,7 @@ async def set_hostname(
     return response
 
 
-@app.post("/set-port", response_class=HTMLResponse)
+@app.post("/set-port")
 async def set_port(
     portForNewAccessKeys: int = Form(),
     outline_client: OutlineVPN = Depends(get_outline_client),
@@ -159,7 +156,7 @@ async def set_port(
     return response
 
 
-@app.post("/set-data-limit", response_class=HTMLResponse)
+@app.post("/set-data-limit")
 async def set_data_limit(
     dataLimitForAllKeys: int = Form(),
     outline_client: OutlineVPN = Depends(get_outline_client),
@@ -171,7 +168,7 @@ async def set_data_limit(
     return response
 
 
-@app.post("/delete-data-limit", response_class=HTMLResponse)
+@app.post("/delete-data-limit")
 async def delete_data_limit(
     outline_client: OutlineVPN = Depends(get_outline_client),
 ):
@@ -182,7 +179,7 @@ async def delete_data_limit(
     return response
 
 
-@app.post("/set-data-limit/{key_id}", response_class=HTMLResponse)
+@app.post("/set-data-limit/{key_id}")
 async def set_key_data_limit(
     key_id: int, dataLimit: int = Form(),
     outline_client: OutlineVPN = Depends(get_outline_client),
@@ -194,7 +191,7 @@ async def set_key_data_limit(
     return response
 
 
-@app.post("/delete-data-limit/{key_id}", response_class=HTMLResponse)
+@app.post("/delete-data-limit/{key_id}")
 async def delete_key_data_limit(
     key_id: int,
     outline_client: OutlineVPN = Depends(get_outline_client),
@@ -206,7 +203,7 @@ async def delete_key_data_limit(
     return response
 
 
-@app.post("/logout", response_class=HTMLResponse)
+@app.post("/logout")
 async def logout():
     response = RedirectResponse('/', status_code=status.HTTP_302_FOUND)
     response.delete_cookie('outputJsonCookie')
